@@ -1,22 +1,18 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import Button from '@/components/Button';
 import type { Joke } from '@/features/jokes/jokesInterfaces';
-import { useGetJoke } from '@/hooks/useGetJokes';
-import { isJokeInArray } from '@/utils';
+import { useGetJoke } from '@/hooks/useGetJoke';
+import { isJokeInArray } from '@/utils/jokeUtils';
 import { memo } from 'react';
 
 interface JokeItemProps {
-    pool: Joke[];
     joke: Joke;
     onClick: (joke: Joke, action: 'add' | 'remove') => void;
-    setPool: (i: Joke[]) => void;
 }
 
-function JokeItem({ joke, onClick, setPool, pool }: JokeItemProps) {
-    const { trigger } = useGetJoke({
-        existing: pool,
-        replaceId: joke.id,
-        setPool
+function JokeItem({ joke, onClick }: JokeItemProps) {
+    const { trigger, isLoading } = useGetJoke({
+        replaceId: joke.id
     });
 
     return (
@@ -45,7 +41,7 @@ function JokeItem({ joke, onClick, setPool, pool }: JokeItemProps) {
                 Punchline: <span className="font-normal">{joke.punchline}</span>
             </h3>
 
-            <div className="opacity-0 group-hover:opacity-100 transition w-full flex justify-between">
+            <div className="opacity-0 group-hover:opacity-100 transition w-full flex items-end justify-between">
                 <Button
                     disabled={isJokeInArray(joke.id)}
                     onClick={() => onClick(joke, 'add')}
@@ -61,9 +57,10 @@ function JokeItem({ joke, onClick, setPool, pool }: JokeItemProps) {
                 />
 
                 <Button
+                    disabled={isJokeInArray(joke.id)}
                     onClick={async () => await trigger({})}
-                    title="Refresh"
-                    theme="primary"
+                    title={isLoading ? 'Loading...' : 'Refresh'}
+                    theme={isJokeInArray(joke.id) ? 'white' : 'primary'}
                 />
             </div>
         </li>

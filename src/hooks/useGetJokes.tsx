@@ -1,18 +1,11 @@
-import type { Joke } from '@/features/jokes/jokesInterfaces';
-import {
-    useGetTenJokesQuery,
-    useLazyGetRandomJokeQuery
-} from '@/features/jokes/jokesService';
-import { useEffect, useState } from 'react';
+import { useAppDispatch, useAppSelector } from '@/app/store';
+import { useGetTenJokesQuery } from '@/features/jokes/jokesService';
+import { selectJokes, setPool } from '@/features/jokes/jokesSlice';
+import { useEffect } from 'react';
 
-export const useGetJokes = ({
-    limit,
-    existing
-}: {
-    limit: number;
-    existing: Joke[];
-}) => {
-    const [pool, setPool] = useState<Joke[]>([...existing]);
+export const useGetJokes = ({ limit }: { limit: number }) => {
+    const dispatch = useAppDispatch();
+    const { pool } = useAppSelector(selectJokes);
     const { data, refetch, isLoading, isFetching } = useGetTenJokesQuery(
         {},
         { skip: pool.length === limit }
@@ -26,7 +19,7 @@ export const useGetJokes = ({
                 .filter((joke) => !pool.find((i) => i.id === joke.id))
                 .slice(0, limit - existingJokesLength);
 
-            setPool((prev) => [...prev, ...newJokes]);
+            dispatch(setPool([...pool, ...newJokes]));
 
             if (pool.length < limit) {
                 void refetch();
@@ -34,39 +27,5 @@ export const useGetJokes = ({
         }
     }, [data]);
 
-    return { pool, isLoading: isLoading || isFetching, setPool };
-};
-
-const replaceJoke = (jokes: Joke[], replaceJokeId: number, newJoke: Joke) =>
-    jokes.map((i) => {
-        if (replaceJokeId === i.id) {
-            return newJoke;
-        }
-        return i;
-    });
-
-export const useGetJoke = ({
-    existing,
-    setPool,
-    replaceId
-}: {
-    existing: Joke[];
-    setPool: (i: Joke[]) => void;
-    replaceId: number;
-}) => {
-    const [trigger, { data: newJoke }] = useLazyGetRandomJokeQuery({});
-
-    useEffect(() => {
-        if (newJoke) {
-            const isJokeExists = existing.find((i) => i.id === newJoke.id);
-
-            if (isJokeExists) {
-                void trigger({});
-            } else {
-                setPool([...replaceJoke(existing, replaceId, newJoke)]);
-            }
-        }
-    }, [newJoke]);
-
-    return { trigger };
+    return { pool, isLoading: isLoading || isFetching };
 };

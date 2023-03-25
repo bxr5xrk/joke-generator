@@ -8,10 +8,12 @@ const jokesFromLS = JSON.parse(localStorage.getItem(JOKES_LS_KEY) ?? '[]');
 
 export interface jokesState {
     jokes: Joke[];
+    pool: Joke[];
 }
 
 const initialState: jokesState = {
-    jokes: jokesFromLS
+    jokes: jokesFromLS,
+    pool: jokesFromLS
 };
 
 export const jokesSlice = createSlice({
@@ -20,11 +22,14 @@ export const jokesSlice = createSlice({
     reducers: {
         setJokes: (state, action: PayloadAction<Joke[]>) => {
             state.jokes = action.payload;
+        },
+        setPool: (state, action: PayloadAction<Joke[]>) => {
+            state.pool = action.payload;
         }
     }
 });
 
-export const { setJokes } = jokesSlice.actions;
+export const { setJokes, setPool } = jokesSlice.actions;
 
 export const selectJokes = (state: RootState) => state.jokes;
 
