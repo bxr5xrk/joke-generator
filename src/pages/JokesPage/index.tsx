@@ -12,7 +12,7 @@ export default function JokesPage() {
     });
 
     return (
-        <main className="w-full flex items-center justify-center">
+        <main className="w-full flex items-center justify-center pb-3">
             <div className="max-w-4xl h-full space-y-3">
                 <JokeList />
 
