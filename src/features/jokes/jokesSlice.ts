@@ -1,29 +1,31 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import type { RootState } from '../../app/store';
+import { type Joke } from './jokesInterfaces';
+import { JOKES_LS_KEY } from '@/config';
 
-export interface productsState {
-    currentPage: number;
+const jokesFromLS = JSON.parse(localStorage.getItem(JOKES_LS_KEY) ?? '[]');
+
+export interface jokesState {
+    jokes: Joke[];
 }
 
-const initialState: productsState = {
-    currentPage: 1
+const initialState: jokesState = {
+    jokes: jokesFromLS
 };
 
 export const jokesSlice = createSlice({
     name: 'jokes',
     initialState,
     reducers: {
-        setCurrentPage: (state, action: PayloadAction<number>) => {
-            state.currentPage = action.payload;
+        setJokes: (state, action: PayloadAction<Joke[]>) => {
+            state.jokes = action.payload;
         }
     }
 });
 
-export const {
-    // setCurrentPage,
-} = jokesSlice.actions;
+export const { setJokes } = jokesSlice.actions;
 
-export const selectProducts = (state: RootState) => state.products;
+export const selectJokes = (state: RootState) => state.jokes;
 
 export default jokesSlice.reducer;

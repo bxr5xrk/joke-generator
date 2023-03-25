@@ -13,6 +13,9 @@ module.exports = {
         extend: {
             fontFamily: {
                 montserrat: ['Montserrat', 'sans-serif']
+            },
+            gridTemplateRows: {
+                '4auto': 'auto auto auto auto'
             }
         }
     },
