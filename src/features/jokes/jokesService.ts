@@ -10,20 +10,14 @@ export const jokesApi = createApi({
     }),
     endpoints: (builder) => ({
         getTenJokes: builder.query<Joke[], unknown>({
-            query: () => 'random_ten',
-            providesTags: (result) =>
-                result
-                    ? [
-                          ...result.map(
-                              ({ id }) => ({ type: 'Jokes', id } as const)
-                          ),
-                          { type: 'Jokes', id: 'LIST' }
-                      ]
-                    : [{ type: 'Jokes', id: 'LIST' }]
+            query: () => 'random_ten'
+        }),
+        getRandomJoke: builder.query<Joke, unknown>({
+            query: () => 'random_joke'
         })
     })
 });
 
-const { useGetTenJokesQuery } = jokesApi;
+const { useGetTenJokesQuery, useLazyGetRandomJokeQuery } = jokesApi;
 
-export { useGetTenJokesQuery };
+export { useGetTenJokesQuery, useLazyGetRandomJokeQuery };

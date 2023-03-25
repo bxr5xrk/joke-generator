@@ -1,5 +1,8 @@
 import type { Joke } from '@/features/jokes/jokesInterfaces';
-import { useGetTenJokesQuery } from '@/features/jokes/jokesService';
+import {
+    useGetTenJokesQuery,
+    useLazyGetRandomJokeQuery
+} from '@/features/jokes/jokesService';
 import { useEffect, useState } from 'react';
 
 export const useGetJokes = ({
@@ -31,5 +34,39 @@ export const useGetJokes = ({
         }
     }, [data]);
 
-    return { pool, isLoading: isLoading || isFetching };
+    return { pool, isLoading: isLoading || isFetching, setPool };
+};
+
+const replaceJoke = (jokes: Joke[], replaceJokeId: number, newJoke: Joke) =>
+    jokes.map((i) => {
+        if (replaceJokeId === i.id) {
+            return newJoke;
+        }
+        return i;
+    });
+
+export const useGetJoke = ({
+    existing,
+    setPool,
+    replaceId
+}: {
+    existing: Joke[];
+    setPool: (i: Joke[]) => void;
+    replaceId: number;
+}) => {
+    const [trigger, { data: newJoke }] = useLazyGetRandomJokeQuery({});
+
+    useEffect(() => {
+        if (newJoke) {
+            const isJokeExists = existing.find((i) => i.id === newJoke.id);
+
+            if (isJokeExists) {
+                void trigger({});
+            } else {
+                setPool([...replaceJoke(existing, replaceId, newJoke)]);
+            }
+        }
+    }, [newJoke]);
+
+    return { trigger };
 };
