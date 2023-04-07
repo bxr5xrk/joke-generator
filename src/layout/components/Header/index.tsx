@@ -1,7 +1,7 @@
 export default function Header() {
     return (
-        <header className="w-full py-3 border-b flex justify-center">
-            <h1 className="uppercase text-2xl font-bold">Joke generator</h1>
+        <header className="flex w-full justify-center border-b py-3">
+            <h1 className="text-2xl font-bold uppercase">Joke generator</h1>
         </header>
     );
 }

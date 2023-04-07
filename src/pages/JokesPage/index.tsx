@@ -12,13 +12,13 @@ export default function JokesPage() {
     });
 
     return (
-        <main className="w-full flex items-center justify-center pb-3">
-            <div className="max-w-4xl h-full space-y-3">
+        <main className="flex w-full items-center justify-center pb-3">
+            <div className="h-full max-w-4xl space-y-3">
                 <JokeList />
 
                 {isLoading ? <Spinner /> : null}
 
-                <div className="w-full flex justify-center">
+                <div className="flex w-full justify-center">
                     <Button
                         onClick={() => setLimit((prev) => prev + JOKES_LIMIT)}
                         title="Load more"
